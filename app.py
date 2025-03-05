@@ -36,7 +36,7 @@ def calcular_rendimento_total(valor_investido, taxa_mensal, meses, parcela_mensa
 
     return rendimento_total
 
-def comparar_pagamentos(valor_vista, valor_parcelado, parcelas, taxa_mensal, cashback_percentual=0.00, pontos_por_dolar=0, valor_mil_pontos=30, taxa_cambio=5.0):
+def comparar_pagamentos(valor_vista, valor_parcelado, parcelas, taxa_mensal, cashback_percentual=0.0, pontos_por_dolar=0, valor_mil_pontos=30, taxa_cambio=5.0):
     try:
         # Cálculo do cashback
         cashback = valor_parcelado * cashback_percentual
@@ -58,11 +58,11 @@ def comparar_pagamentos(valor_vista, valor_parcelado, parcelas, taxa_mensal, cas
         # Desconto mínimo para valer a pena pagar à vista
         desconto_minimo = (rendimento_total + cashback + valor_pontos) / valor_parcelado * 100
 
-        juros_str = f"Juros gerados ao pagar parcelado: R$ {rendimento_total:.2f}"
-        st.write(juros_str)
+        juros_str = f"Rendimento líquido acumulado: R$ {rendimento_total:.2f}"
+        st.warning(juros_str)
 
         with st.expander("Como o valor rendeu ao longo do parcelamento?"):
-            st.write("Ao parcelar, o valor que seria pago à vista permanece disponível e rende mensalmente com a taxa SELIC.")
+            st.write("Ao parcelar, o valor que seria pago à vista permanece disponível e rende mensalmente com a taxa SELIC (a 100% CDI).")
             st.write("""
             A cada mês, o rendimento bruto é calculado e o Imposto de Renda (IR) é aplicado conforme o prazo de investimento:
             - Até 6 meses: 22,5%
@@ -86,18 +86,19 @@ def comparar_pagamentos(valor_vista, valor_parcelado, parcelas, taxa_mensal, cas
 
         if cashback > 0 or valor_pontos > 0:
             if cashback > 0:
-                st.write(f"Cashback: R$ {cashback:.2f}")
+                st.warning(f"Cashback: R$ {cashback:.2f}")
             if valor_pontos > 0:
-                st.write(f"Pontos: R$ {valor_pontos:.2f}")
+                st.warning(f"Pontos: R$ {valor_pontos:.2f} ({pontos:.0f} pontos)")
 
-        st.write(f"Valor máximo para pagar à vista: R$ {valor_maximo_a_vista:.2f} (com desconto mínimo de: {desconto_minimo:.2f}%)")
+
+        st.info(f"Limite para pagamento à vista: R$ {valor_maximo_a_vista:.2f} (desconto mínimo aceitável: {desconto_minimo:.2f}%)")
 
         if valor_vista <= valor_maximo_a_vista:
             st.success("Conclusão: Pagar à vista.")
         else:
             st.success("Conclusão: Pagar parcelado.")
 
-        st.write(f"Taxa mensal considerada: {taxa_mensal * 100:.2f}%")
+        st.write(f"Taxa mensal aproximada: {taxa_mensal * 100:.2f}%")
 
         with st.expander("Como a taxa mensal foi calculada?"):
             st.write("A taxa mensal foi calculada a partir da taxa anual (SELIC) usando a seguinte fórmula:")
@@ -133,8 +134,8 @@ if opcao == "Cashback":
     pontos_por_dolar = 0  # Desativa pontos
     valor_mil_pontos = 0  # Desativa pontos
 elif opcao == "Pontos":
-    pontos_por_dolar = st.number_input("Pontos por dólar gasto:", min_value=0.0, value=0.0, step=0.01, format="%.2f")
-    valor_mil_pontos = st.number_input("Valor do milheiro (R$):", min_value=0.0, value=30.0, step=0.01, format="%.2f")
+    pontos_por_dolar = st.number_input("Pontos por dólar gasto:", min_value=0.0, value=1.0, step=0.1, format="%.1f")
+    valor_mil_pontos = st.number_input("Valor do milheiro (R$):", min_value=0.0, value=30.0, step=0.1, format="%.1f")
     st.info("ℹ️ Nota: Verifique o valor do milheiro com o banco que oferece o programa de pontos.")
     cashback_percentual = 0  # Desativa cashback
 else:
