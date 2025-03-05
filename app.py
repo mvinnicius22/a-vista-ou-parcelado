@@ -49,7 +49,8 @@ def calcular_rendimento_total(valor_investido, taxa_mensal, meses, parcela_mensa
         rendimento_liquido = rendimento_mes * (1 - ir)
         rendimento_total += rendimento_liquido
 
-        # Atualiza o saldo após retirar a parcela mensal
+        # Atualiza o saldo após retirar a parcela mensal e soma o rendimento gerado
+        saldo += rendimento_liquido
         saldo -= parcela_mensal
 
     return rendimento_total
@@ -144,26 +145,32 @@ if st.button("Calcular"):
 
 st.header("FAQ")
 with st.expander("Como o valor rendeu ao longo do parcelamento?"):
-    st.write("Ao parcelar, o valor que seria pago à vista permanece disponível e rende mensalmente com a taxa SELIC (a 100% CDI).")
-    st.write("""
-    A cada mês, o rendimento bruto é calculado e o Imposto de Renda (IR) é aplicado conforme o prazo de investimento:
-    - Até 6 meses: 22,5%
-    - De 6 a 12 meses: 20%
-    - De 12 a 24 meses: 17,5%
-    - Acima de 24 meses: 15%
+    st.write("Ao optar pelo parcelamento, o valor que seria pago à vista continua disponível e rende mensalmente com a taxa SELIC (100% do CDI).")
 
-    Os juros são aplicados ao saldo restante, que é atualizado mensalmente com o desconto da parcela vigente. O rendimento líquido é acumulado ao longo do período.
+    st.write("### Funcionamento do rendimento:")
+    st.write("""
+    - O saldo disponível para rendimento diminui a cada mês conforme o pagamento das parcelas.
+    - Os juros são aplicados sobre o saldo restante e sobre o rendimento líquido do mês anterior.
+    - O rendimento líquido é ajustado conforme a tabela regressiva do Imposto de Renda (IR).
     """)
 
-    st.write("Rendimento mensal:")
+    st.write("### Tabela regressiva do IR:")
+    st.write("""
+    - **Até 6 meses**: 22,5%  
+    - **De 6 a 12 meses**: 20%  
+    - **De 12 a 24 meses**: 17,5%  
+    - **Acima de 24 meses**: 15%  
+    """)
+
+    st.write("### Cálculo do rendimento mensal:")
     st.latex(r"R_{\text{líquido}} = \text{Saldo} \times \text{Taxa mensal} \times (1 - IR)")
 
     st.write("""
     Onde:  
-    - **Rendimento líquido**: Valor gerado após o desconto do imposto  
-    - **Saldo**: Valor total disponível no início do mês  
-    - **Taxa mensal**: Taxa de rendimento mensal correspondente  
-    - **IR**: Percentual de Imposto de Renda aplicado conforme o período  
+    - **Rendimento líquido**: Valor gerado após o desconto do imposto.  
+    - **Saldo**: Valor disponível no início do mês.  
+    - **Taxa mensal**: Percentual aplicado ao saldo.  
+    - **IR**: Alíquota do Imposto de Renda conforme o período.  
     """)
 
 with st.expander("Como a taxa mensal foi calculada?"):
