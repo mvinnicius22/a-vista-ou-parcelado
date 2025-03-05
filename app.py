@@ -152,7 +152,7 @@ with st.expander("Como o valor rendeu ao longo do parcelamento?"):
     - De 12 a 24 meses: 17,5%
     - Acima de 24 meses: 15%
 
-    Os juros são aplicados ao saldo restante, que é atualizado mensalmente com o desconto da parcela do financiamento. O rendimento líquido é acumulado ao longo do período.
+    Os juros são aplicados ao saldo restante, que é atualizado mensalmente com o desconto da parcela vigente. O rendimento líquido é acumulado ao longo do período.
     """)
 
     st.write("Rendimento mensal:")
